@@ -1,7 +1,12 @@
+import Header from "./components/Header";
+import useMovies from "./API";
+
 function App() {
+  useMovies();
+
   return (
     <div className="App">
-      <h1>hallo</h1>
+      <Header />
     </div>
   );
 }
