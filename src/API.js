@@ -21,7 +21,7 @@ function fetchWithAuthorization(url, options = {}) {
   return fetch(fullUrl, fetchOptions);
 }
 const useMovies = () => {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,6 +35,10 @@ const useMovies = () => {
       })
       .catch((err) => console.error(err));
   }, []);
+  return {
+    movies,
+    loading,
+  };
 };
 
 export default useMovies;

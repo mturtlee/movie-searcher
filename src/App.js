@@ -1,12 +1,12 @@
 import Header from "./components/Header";
-import useMovies from "./API";
+
+import MovieList from "./components/Movie-list";
 
 function App() {
-  useMovies();
-
   return (
     <div className="App">
       <Header />
+      <MovieList />
     </div>
   );
 }
