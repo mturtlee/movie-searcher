@@ -24,6 +24,17 @@ body {
   margin: 100px;
   margin-left: 15%;
 }
+.pagination {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+}
+.pagination .MuiPaginationItem-root {
+  color: rgb(0, 0, 0);
+}
+.pagination .MuiPaginationItem-root:hover {
+  background-color: #eaeaea;
+}
 
 @media (max-width: 960px) {
   .movie-grid {

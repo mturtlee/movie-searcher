@@ -20,12 +20,12 @@ function fetchWithAuthorization(url, options = {}) {
 
   return fetch(fullUrl, fetchOptions);
 }
-const useMovies = () => {
-  const [movies, setMovies] = useState({});
+const useMovies = (currentPage) => {
+  const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchWithAuthorization(`3/tv/popular?language=en-US&page=1`, {
+    fetchWithAuthorization(`3/tv/popular?language=en-US&page=${currentPage}`, {
       method: "GET",
     })
       .then((response) => response.json())
@@ -34,10 +34,11 @@ const useMovies = () => {
         setMovies(data);
       })
       .catch((err) => console.error(err));
-  }, []);
+  }, [currentPage]);
   return {
     movies,
     loading,
+    totalPages: movies.total_pages,
   };
 };
 

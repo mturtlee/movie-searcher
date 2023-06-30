@@ -1,6 +1,14 @@
-import { Card, CardMedia, CardContent, Typography } from "@mui/material/";
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Stack,
+  Pagination,
+} from "@mui/material/";
 
 import useMovies from "../API";
+import { useState } from "react";
 
 const MediaCard = ({ movie }) => {
   const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
@@ -26,8 +34,12 @@ const MediaCard = ({ movie }) => {
 };
 
 const MovieList = () => {
-  const { movies, loading } = useMovies();
-  console.log(movies);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { movies, loading, totalPages } = useMovies(currentPage);
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="movie-grid">
@@ -38,6 +50,17 @@ const MovieList = () => {
           {movies.results.map((movie) => (
             <MediaCard key={movie.id} movie={movie} />
           ))}
+          <div className="pagination">
+            <Stack spacing={2}>
+              <Pagination
+                count={totalPages}
+                shape="rounded"
+                page={currentPage}
+                onChange={handlePageChange}
+                size="large"
+              />
+            </Stack>
+          </div>
         </>
       )}
     </div>
