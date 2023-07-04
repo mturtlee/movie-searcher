@@ -1,4 +1,3 @@
-// SearchBar.js
 import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
@@ -11,10 +10,12 @@ const SearchBar = ({ onSearch }) => {
 
   const handleSearch = () => {
     onSearch(input);
+    setInput("");
   };
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       onSearch(input);
+      setInput("");
     }
   };
 

@@ -1,3 +1,4 @@
+import { queries } from "@testing-library/react";
 import { useState, useEffect } from "react";
 
 function fetchWithAuthorization(url, options = {}) {
@@ -20,25 +21,50 @@ function fetchWithAuthorization(url, options = {}) {
 
   return fetch(fullUrl, fetchOptions);
 }
-const useMovies = (currentPage) => {
+
+const useMovies = (currentPage, query) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const searchMovies = (query) => {
+    fetchWithAuthorization(
+      `3/search/movie?query=${query}&include_adult=false&language=en-US&page=${currentPage}`,
+      {
+        method: "GET",
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setLoading(false);
+        setMovies(data.results);
+        setTotalPages(data.total_pages);
+      })
+      .catch((err) => console.error(err));
+  };
 
   useEffect(() => {
-    fetchWithAuthorization(`3/tv/popular?language=en-US&page=${currentPage}`, {
+    const apiRequest = query
+      ? `3/search/movie?query=${query}&include_adult=false&language=en-US&page=${currentPage}`
+      : `3/tv/popular?language=en-US&page=${currentPage}`;
+
+    fetchWithAuthorization(apiRequest, {
       method: "GET",
     })
       .then((response) => response.json())
       .then((data) => {
         setLoading(false);
-        setMovies(data);
+        setMovies(data.results);
+        setTotalPages(data.total_pages);
       })
       .catch((err) => console.error(err));
-  }, [currentPage]);
+  }, [currentPage, query]);
+
   return {
     movies,
     loading,
-    totalPages: movies.total_pages,
+    totalPages,
+    searchMovies,
   };
 };
 

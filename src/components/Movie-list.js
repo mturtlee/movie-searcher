@@ -24,7 +24,7 @@ const MediaCard = ({ movie }) => {
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          {movie.title} {movie.name}
+          {movie.title || movie.name}
         </Typography>
       </CardContent>
     </Card>
@@ -33,29 +33,20 @@ const MediaCard = ({ movie }) => {
 
 const MovieList = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchResults, setSearchResults] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const { movies, loading, totalPages } = useMovies(currentPage);
+  const { movies, loading, totalPages, searchMovies } = useMovies(
+    currentPage,
+    searchQuery
+  );
   const handlePageChange = (event, page) => {
     setCurrentPage(page);
   };
+
   const handleSearch = (input) => {
-    fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${input}&include_adult=false&language=en-US&page=1`,
-      {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNDk1ZTA2ZGIzNGEyODA0Mzk3YTMyYTczZGY1N2RiMCIsInN1YiI6IjY0NzllMTg2MGUyOWEyMDBiZjFlMzE5MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.1ByVfuwJvJoMkzuPTphVplak-0iNNh42t9EYKbyyLho",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setSearchResults(data.results);
-      })
-      .catch((err) => console.error(err));
+    searchMovies(input);
+    setCurrentPage(1);
+    setSearchQuery(input);
   };
 
   return (
@@ -68,19 +59,9 @@ const MovieList = () => {
           <h1>loading</h1>
         ) : (
           <>
-            {searchResults ? (
-              <>
-                {searchResults.map((movie) => (
-                  <MediaCard key={movie.id} movie={movie} />
-                ))}
-              </>
-            ) : (
-              <>
-                {movies.results.map((movie) => (
-                  <MediaCard key={movie.id} movie={movie} />
-                ))}
-              </>
-            )}
+            {movies.map((movie) => (
+              <MediaCard key={movie.id} movie={movie} />
+            ))}
           </>
         )}
       </div>
