@@ -20,25 +20,47 @@ function fetchWithAuthorization(url, options = {}) {
 
   return fetch(fullUrl, fetchOptions);
 }
-const useMovies = (currentPage) => {
+
+const useMovies = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
+
+  const handleSearch = (input) => {
+    setSearchQuery(input);
+  };
 
   useEffect(() => {
-    fetchWithAuthorization(`3/tv/popular?language=en-US&page=${currentPage}`, {
+    setLoading(true);
+    const apiRequest = searchQuery
+      ? `3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`
+      : `3/tv/popular?language=en-US&page=${currentPage}`;
+
+    fetchWithAuthorization(apiRequest, {
       method: "GET",
     })
       .then((response) => response.json())
       .then((data) => {
         setLoading(false);
-        setMovies(data);
+        setMovies(data.results);
+        setTotalPages(data.total_pages);
       })
       .catch((err) => console.error(err));
-  }, [currentPage]);
+  }, [currentPage, searchQuery]);
+
   return {
     movies,
     loading,
-    totalPages: movies.total_pages,
+    totalPages,
+    handlePageChange,
+    handleSearch,
+    setCurrentPage,
   };
 };
 

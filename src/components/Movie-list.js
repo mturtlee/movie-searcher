@@ -8,7 +8,7 @@ import {
 } from "@mui/material/";
 
 import useMovies from "../API";
-import { useState } from "react";
+import SearchBar from "./SearchBar";
 
 const MediaCard = ({ movie }) => {
   const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
@@ -22,11 +22,13 @@ const MediaCard = ({ movie }) => {
         alt="pic"
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          {movie.name}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {movie.description}
+        <Typography
+          gutterBottom
+          variant="h5"
+          component="div"
+          style={{ fontSize: "19px" }}
+        >
+          {movie.title || movie.name}
         </Typography>
       </CardContent>
     </Card>
@@ -34,35 +36,43 @@ const MediaCard = ({ movie }) => {
 };
 
 const MovieList = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const { movies, loading, totalPages } = useMovies(currentPage);
-  const handlePageChange = (event, page) => {
-    setCurrentPage(page);
-  };
+  const {
+    movies,
+    loading,
+    totalPages,
+    handlePageChange,
+    handleSearch,
+    currentPage,
+  } = useMovies();
 
   return (
-    <div className="movie-grid">
-      {loading ? (
-        <h1>loading</h1>
-      ) : (
-        <>
-          {movies.results.map((movie) => (
-            <MediaCard key={movie.id} movie={movie} />
-          ))}
-          <div className="pagination">
-            <Stack spacing={2}>
-              <Pagination
-                count={totalPages}
-                shape="rounded"
-                page={currentPage}
-                onChange={handlePageChange}
-                size="large"
-              />
-            </Stack>
-          </div>
-        </>
-      )}
+    <div className="movie-list-container">
+      <div className="search-bar-container">
+        <SearchBar onSearch={handleSearch} />
+      </div>
+      <div className="movie-grid">
+        {loading ? (
+          <h1>loading</h1>
+        ) : (
+          <>
+            {movies.map((movie) => (
+              <MediaCard key={movie.id} movie={movie} />
+            ))}
+          </>
+        )}
+      </div>
+
+      <div className="pagination">
+        <Stack spacing={2}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            page={currentPage}
+            onChange={handlePageChange}
+            size="large"
+          />
+        </Stack>
+      </div>
     </div>
   );
 };
