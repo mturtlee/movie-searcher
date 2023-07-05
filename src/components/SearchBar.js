@@ -8,10 +8,6 @@ const SearchBar = ({ onSearch }) => {
     setInput(e.target.value);
   };
 
-  const handleSearch = () => {
-    onSearch(input);
-    setInput("");
-  };
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       onSearch(input);
@@ -21,7 +17,7 @@ const SearchBar = ({ onSearch }) => {
 
   return (
     <div className="input-wrapper">
-      <FaSearch id="search-icon" onClick={handleSearch} />
+      <FaSearch id="search-icon" />
       <input
         placeholder="Type to search..."
         value={input}

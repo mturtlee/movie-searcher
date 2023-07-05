@@ -1,4 +1,3 @@
-import { queries } from "@testing-library/react";
 import { useState, useEffect } from "react";
 
 function fetchWithAuthorization(url, options = {}) {
@@ -22,30 +21,25 @@ function fetchWithAuthorization(url, options = {}) {
   return fetch(fullUrl, fetchOptions);
 }
 
-const useMovies = (currentPage, query) => {
+const useMovies = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const searchMovies = (query) => {
-    fetchWithAuthorization(
-      `3/search/movie?query=${query}&include_adult=false&language=en-US&page=${currentPage}`,
-      {
-        method: "GET",
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setLoading(false);
-        setMovies(data.results);
-        setTotalPages(data.total_pages);
-      })
-      .catch((err) => console.error(err));
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
+
+  const handleSearch = (input) => {
+    setSearchQuery(input);
   };
 
   useEffect(() => {
-    const apiRequest = query
-      ? `3/search/movie?query=${query}&include_adult=false&language=en-US&page=${currentPage}`
+    setLoading(true);
+    const apiRequest = searchQuery
+      ? `3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`
       : `3/tv/popular?language=en-US&page=${currentPage}`;
 
     fetchWithAuthorization(apiRequest, {
@@ -58,13 +52,15 @@ const useMovies = (currentPage, query) => {
         setTotalPages(data.total_pages);
       })
       .catch((err) => console.error(err));
-  }, [currentPage, query]);
+  }, [currentPage, searchQuery]);
 
   return {
     movies,
     loading,
     totalPages,
-    searchMovies,
+    handlePageChange,
+    handleSearch,
+    setCurrentPage,
   };
 };
 

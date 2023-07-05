@@ -8,7 +8,6 @@ import {
 } from "@mui/material/";
 
 import useMovies from "../API";
-import { useState } from "react";
 import SearchBar from "./SearchBar";
 
 const MediaCard = ({ movie }) => {
@@ -23,7 +22,12 @@ const MediaCard = ({ movie }) => {
         alt="pic"
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography
+          gutterBottom
+          variant="h5"
+          component="div"
+          style={{ fontSize: "19px" }}
+        >
           {movie.title || movie.name}
         </Typography>
       </CardContent>
@@ -32,22 +36,14 @@ const MediaCard = ({ movie }) => {
 };
 
 const MovieList = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const { movies, loading, totalPages, searchMovies } = useMovies(
+  const {
+    movies,
+    loading,
+    totalPages,
+    handlePageChange,
+    handleSearch,
     currentPage,
-    searchQuery
-  );
-  const handlePageChange = (event, page) => {
-    setCurrentPage(page);
-  };
-
-  const handleSearch = (input) => {
-    searchMovies(input);
-    setCurrentPage(1);
-    setSearchQuery(input);
-  };
+  } = useMovies();
 
   return (
     <div className="movie-list-container">
