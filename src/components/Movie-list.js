@@ -9,18 +9,21 @@ import {
 
 import useMovies from "../API";
 import SearchBar from "./SearchBar";
+import { Link } from "react-router-dom";
 
 const MediaCard = ({ movie }) => {
   const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
   return (
     <Card sx={{ maxWidth: 345 }} className="Card-style">
-      <CardMedia
-        component="img"
-        sx={{ height: 540 }}
-        title={movie.name}
-        src={posterUrl}
-        alt="pic"
-      />
+      <Link to={`movie/${movie.id}`}>
+        <CardMedia
+          component="img"
+          sx={{ height: 540 }}
+          title={movie.name}
+          src={posterUrl}
+          alt="pic"
+        />
+      </Link>
       <CardContent>
         <Typography
           gutterBottom
